@@ -172,6 +172,30 @@ describe('Some tests for scale()', () => {
         });
     });
 
+    describe('single-class scales', () => {
+        it.each([
+            { name: 'automatic', configure: (f) => f.classes(1) },
+            { name: 'explicit', configure: (f) => f.classes([0, 1]) },
+            { name: 'domain first', configure: (f) => f.domain([10, 30]).classes(1) },
+            { name: 'classes first', configure: (f) => f.classes(1).domain([10, 30]) },
+            { name: 'explicit custom breaks', configure: (f) => f.classes([10, 30]) }
+        ])('uses one color for $name classes', ({ configure }) => {
+            const f = configure(scale(['black', 'white']));
+            const values = [-10, 0, 0.25, 0.75, 1, 10, 20, 30, 40];
+
+            expect(values.map((value) => f(value).hex())).toEqual(values.map(() => '#808080'));
+            expect(f.colors(0)).toEqual(['#808080']);
+            expect(f(null).hex()).toBe('#cccccc');
+        });
+
+        it('can restore continuous interpolation with zero classes', () => {
+            const f = scale(['black', 'white']).classes(1).classes(0);
+
+            expect([0, 0.5, 1].map((value) => f(value).hex())).toEqual(['#000000', '#808080', '#ffffff']);
+            expect(f.colors(0)).toEqual(['#000000', '#ffffff']);
+        });
+    });
+
     describe('automatic classes follow domain changes', () => {
         it('produces the same colors regardless of configuration order', () => {
             const domainFirst = scale(['black', 'white']).domain([-2, 2]).classes(5);

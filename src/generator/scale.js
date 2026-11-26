@@ -96,7 +96,9 @@ export default function (colors) {
             return _nacol;
         }
         if (!bypassMap) {
-            if (_classes && _classes.length > 2) {
+            if (_classes && _classes.length === 2 && _classCount !== 0) {
+                t = 0.5;
+            } else if (_classes && _classes.length > 2) {
                 // find the class
                 const c = getClass(val);
                 t = c / (_classes.length - 2);
@@ -345,7 +347,7 @@ export default function (colors) {
             // returns all colors based on the defined classes
             colors = [];
             let samples = [];
-            if (_classes && _classes.length > 2) {
+            if (_classes && _classes.length > 1 && _classCount !== 0) {
                 for (
                     let i = 1, end = _classes.length, asc = 1 <= end;
                     asc ? i < end : i > end;
